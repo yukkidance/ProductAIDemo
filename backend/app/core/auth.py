@@ -36,6 +36,21 @@ def check_auth(credentials: HTTPBasicCredentials = Depends(security)) -> str:
 _AUTH_EXEMPT_PATHS = {"/health"}
 
 
+def _cors_headers(request: Request) -> dict[str, str]:
+    """BasicAuthMiddleware 直接 return 的 401 不会经过 CORSMiddleware(后者在内层),
+    跨域 fetch 拿不到 Access-Control-Allow-Origin 会被浏览器屏蔽成 opaque response,
+    前端 fetch 拿不到 status。手动 echo Origin 解决。
+    """
+    origin = request.headers.get("origin")
+    if not origin:
+        return {}
+    return {
+        "Access-Control-Allow-Origin": origin,
+        "Vary": "Origin",
+        "Access-Control-Allow-Credentials": "true",
+    }
+
+
 def _parse_basic_header(header: str | None) -> tuple[str, str] | None:
     if not header or not header.startswith("Basic "):
         return None
@@ -67,7 +82,7 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
                 content='{"detail":"Authentication required"}',
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 media_type="application/json",
-                headers={"WWW-Authenticate": "Basic realm='AI Portfolio'"},
+                headers={"WWW-Authenticate": "Basic realm='AI Portfolio'", **_cors_headers(request)},
             )
         user, password = creds
         user_ok = secrets.compare_digest(user, settings.DEMO_USERNAME)
@@ -77,6 +92,6 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
                 content='{"detail":"Invalid credentials"}',
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 media_type="application/json",
-                headers={"WWW-Authenticate": "Basic realm='AI Portfolio'"},
+                headers={"WWW-Authenticate": "Basic realm='AI Portfolio'", **_cors_headers(request)},
             )
         return await call_next(request)

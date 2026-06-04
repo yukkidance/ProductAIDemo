@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Lock, LogIn } from "lucide-react";
+import { Lock, LogIn, Loader2 } from "lucide-react";
 import { getAuth, setAuth } from "@/lib/auth";
+import { API_BASE } from "@/lib/utils";
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
-  const [status, setStatus] = useState<"loading" | "authed" | "unauthed">("loading");
+  const [status, setStatus] = useState<"loading" | "authed" | "unauthed" | "verifying">("loading");
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [err, setErr] = useState("");
@@ -13,21 +14,53 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     setStatus(getAuth() ? "authed" : "unauthed");
   }, []);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user.trim() || !pass) {
       setErr("用户名和密码不能为空");
       return;
     }
-    setAuth(user.trim(), pass);
-    setStatus("authed");
     setErr("");
+    setStatus("verifying");
+    try {
+      const b64 = btoa(`${user.trim()}:${pass}`);
+      const res = await fetch(`${API_BASE}/`, {
+        method: "GET",
+        headers: { Authorization: `Basic ${b64}` },
+      });
+      if (res.status === 200) {
+        setAuth(user.trim(), pass);
+        setStatus("authed");
+        return;
+      }
+      if (res.status === 401) {
+        setStatus("unauthed");
+        setErr("用户名或密码错误");
+        return;
+      }
+      setStatus("unauthed");
+      setErr(`后端返回 HTTP ${res.status}`);
+    } catch (e: any) {
+      setStatus("unauthed");
+      setErr("无法连接后端: " + (e?.message || ""));
+    }
   };
 
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg">
         <div className="text-text-muted text-sm">加载中...</div>
+      </div>
+    );
+  }
+
+  if (status === "verifying") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg">
+        <div className="flex items-center gap-2 text-text-muted text-sm">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          正在验证凭据...
+        </div>
       </div>
     );
   }
