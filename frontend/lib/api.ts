@@ -1,11 +1,33 @@
 import axios from "axios";
 import { API_BASE } from "./utils";
+import { getAuthHeader, clearAuth } from "./auth";
 
 export const api = axios.create({
   baseURL: API_BASE,
   timeout: 60000,
   headers: { "Content-Type": "application/json" },
 });
+
+api.interceptors.request.use((config) => {
+  const auth = getAuthHeader();
+  if (auth.Authorization) {
+    config.headers.set("Authorization", auth.Authorization);
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      clearAuth();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+    }
+    return Promise.reject(err);
+  }
+);
 
 /**
  * 消费 SSE 流(用于 RAG 对话 / 营销生成)
@@ -22,10 +44,20 @@ export async function* sseStream(
   try {
     const res = await fetch(`${API_BASE}${url}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
       body: JSON.stringify(body),
       signal: controller.signal,
     });
+    if (res.status === 401) {
+      clearAuth();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+      throw new Error("Unauthorized");
+    }
     if (!res.ok || !res.body) {
       throw new Error(`SSE 请求失败: HTTP ${res.status}`);
     }

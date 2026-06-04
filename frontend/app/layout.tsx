@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "@/components/layout/Nav";
+import AuthGate from "@/components/AuthGate";
 
 export const metadata: Metadata = {
   title: "AI Engineering Portfolio",
@@ -19,13 +20,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Nav />
-        <main className="relative">{children}</main>
-        <footer className="border-t border-border mt-24 py-8 text-center text-xs text-text-muted">
-          <div className="max-w-7xl mx-auto px-6">
-            Built with Next.js · FastAPI · ChromaDB · XGBoost · GLM-4-Flash · React Flow
-          </div>
-        </footer>
+        <AuthGate>
+          <Nav />
+          <main className="relative">{children}</main>
+          <footer className="border-t border-border mt-24 py-8 text-center text-xs text-text-muted">
+            <div className="max-w-7xl mx-auto px-6">
+              Built with Next.js · FastAPI · ChromaDB · XGBoost · GLM-4-Flash · React Flow
+            </div>
+          </footer>
+        </AuthGate>
       </body>
     </html>
   );

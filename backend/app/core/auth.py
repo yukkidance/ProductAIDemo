@@ -58,6 +58,9 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in _AUTH_EXEMPT_PATHS:
             return await call_next(request)
 
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
         creds = _parse_basic_header(request.headers.get("Authorization"))
         if not creds:
             return Response(

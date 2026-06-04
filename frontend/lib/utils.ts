@@ -5,4 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+export const API_BASE = (() => {
+  const raw = process.env.NEXT_PUBLIC_API_BASE;
+  if (!raw) return "http://localhost:8000";
+  return `https://${raw.replace(/:\d+$/, "")}`;
+})();

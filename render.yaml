@@ -34,7 +34,7 @@ services:
       - key: ZHIPU_MODEL
         value: glm-4-flash
       - key: ALLOWED_ORIGINS
-        value: "*"  # 部署后建议改成前端域名
+        value: "https://productaidemo-1.onrender.com"  # 前端域名,逗号分隔支持多个
       - key: PYTHONUNBUFFERED
         value: "1"
       # HTTP Basic Auth - 部署后必须用 Dashboard 覆盖默认值(默认值会进 git)
