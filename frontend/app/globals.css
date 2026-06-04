@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-bg text-text-primary antialiased;
+  }
+  body {
+    @apply min-h-screen;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    @apply bg-brand-500/30 text-text-primary;
+  }
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-bg-card;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border-strong rounded;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-500;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-bg-card/60 backdrop-blur-xl border border-border;
+  }
+  .glass-strong {
+    @apply bg-bg-elevated/80 backdrop-blur-xl border border-border-strong;
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-400 via-accent-purple to-accent-pink bg-clip-text text-transparent;
+  }
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg bg-gradient-to-r from-brand-500 to-accent-purple text-white font-medium hover:shadow-glow-brand transition-all;
+  }
+  .btn-secondary {
+    @apply px-4 py-2 rounded-lg bg-bg-elevated border border-border-strong text-text-primary hover:border-brand-500 transition-colors;
+  }
+  .card {
+    @apply glass rounded-2xl p-6 hover:border-brand-500/40 transition-all;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border;
+  }
+  .badge-brand {
+    @apply badge bg-brand-500/10 text-brand-400 border-brand-500/30;
+  }
+  .badge-cyan {
+    @apply badge bg-accent-cyan/10 text-accent-cyan border-accent-cyan/30;
+  }
+  .badge-green {
+    @apply badge bg-accent-green/10 text-accent-green border-accent-green/30;
+  }
+  .badge-orange {
+    @apply badge bg-accent-orange/10 text-accent-orange border-accent-orange/30;
+  }
+  .input {
+    @apply w-full px-4 py-2.5 rounded-lg bg-bg border border-border text-text-primary placeholder:text-text-muted focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 transition;
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+/* React Flow 主题覆盖 */
+.react-flow {
+  @apply bg-bg;
+}
+.react-flow__background {
+  @apply bg-bg;
+}
+.react-flow__edge-path {
+  stroke: #6366f1;
+  stroke-width: 2;
+}
+.react-flow__edge.animated path {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
+@keyframes dashdraw {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+.react-flow__attribution {
+  display: none;
+}
+.react-flow__controls {
+  @apply !bg-bg-card !border !border-border !rounded-lg overflow-hidden;
+}
+.react-flow__controls button {
+  @apply !bg-bg-card !border-border !text-text-secondary hover:!bg-bg-elevated;
+}

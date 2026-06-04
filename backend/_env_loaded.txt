@@ -1,0 +1,12 @@
+﻿# AI 鏅哄簱鏈哄櫒浜?# 浠?https://open.bigmodel.cn/ 鑾峰彇,glm-4-flash 鍏嶈垂
+ZHIPUAI_API_KEY=example
+ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+ZHIPU_MODEL=glm-4-flash
+
+# 鏈嶅姟閰嶇疆
+BACKEND_HOST=0.0.0.0
+BACKEND_PORT=8000
+
+# 鍚戦噺妯″瀷(鏈湴涓嬭浇,棣栨杩愯鑷姩涓嬭浇 ~90MB)
+EMBEDDING_MODEL=BAAI/bge-small-zh-v1.5
+

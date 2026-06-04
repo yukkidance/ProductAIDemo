@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.venv/
+venv/
+env/
+*.pyc
+
+# 数据/模型(本地生成,不入 git)
+backend/app/data/chroma/
+backend/app/data/manuals/
+backend/app/data/production.db
+backend/app/data/forecast_model.json
+backend/app/data/forecast_meta.json
+backend/app/data/vectors.npy
+backend/app/data/docs.json
+backend/app/data/query_logs.json
+backend/.env
+backend/.env.local
+
+# Node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# 通用
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Docker
+.dockerignore
+Dockerfile
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 根目录原始数据(data/ 不入 git)
+data/
