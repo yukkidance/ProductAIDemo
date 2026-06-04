@@ -20,6 +20,9 @@ interface PredictResult {
   note: string;
   top_features: { name: string; importance: number }[];
   input: any;
+  // 可选错误字段(后端模型未加载时返回)
+  error?: string;
+  loaded?: boolean;
 }
 
 export default function ForecastDemo() {
