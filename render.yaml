@@ -37,6 +37,11 @@ services:
         value: "*"  # 部署后建议改成前端域名
       - key: PYTHONUNBUFFERED
         value: "1"
+      # HTTP Basic Auth - 部署后必须用 Dashboard 覆盖默认值(默认值会进 git)
+      - key: DEMO_USERNAME
+        value: "demo"
+      - key: DEMO_PASSWORD
+        sync: false  # ⚠️ 必须去 Dashboard 填一个 20+ 位强密码,不要用 config.py 默认值
     healthCheckPath: /health
     autoDeploy: true
 

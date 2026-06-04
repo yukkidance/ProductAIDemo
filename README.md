@@ -27,6 +27,22 @@
 
 详细配置见 [`render.yaml`](./render.yaml)。
 
+#### 🔐 部署后必做 1 件事:改默认密码
+
+仓库代码里有一个 32 位随机串作为**默认密码**(在 `backend/app/core/config.py:18`),**这个值会进 GitHub 公开仓库**,所以**生产部署后必须立即在 Render Dashboard 覆盖**。
+
+操作步骤:
+1. 部署成功后,打开 backend 的 Render URL,浏览器会弹 Basic Auth 窗
+2. 先用默认值 `demo` / `7aeae2CdqwnuMgh3MevbBmkZ8HN2zUeV` 登录(确认部署 OK)
+3. 去 **Render Dashboard → ai-portfolio-backend → Environment**
+4. 改 `DEMO_PASSWORD` 为 20+ 位强密码(用 `openssl rand -base64 18` 生成)
+5. **Save Changes → Manual Deploy**(自动重启)
+6. 重启后**只有**知道新密码的人能访问
+
+> **为什么需要鉴权**:Render 公开 URL 任何人点开就能用,会刷你的智谱 API 余额。HTTP Basic Auth 是最简方案:HTTPS 加密传输,浏览器原生弹窗,前端 0 改动,后端中间件校验。
+>
+> **/.env.example 是占位符 / config.py 默认值是 32 位随机串(已暴露,生产必须改)**
+
 ### Option B:本地 Docker 启动
 
 需要 Docker Desktop,镜像总大小 ~300MB。

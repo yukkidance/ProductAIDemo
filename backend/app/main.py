@@ -2,7 +2,8 @@
 FastAPI 入口
 - 启动时预热 RAG(加载 corpus,智谱 API keep-alive)
 - CORS 从环境变量读,Render 部署时填 frontend URL
-- /health 返回详细状态(Render healthcheck 用)
+- HTTP Basic Auth:BasicAuthMiddleware 锁住整个站点(除 /health),防 Render 公开 URL 被滥用
+- /health 免鉴权(Render healthcheck 必需)
 """
 import os
 from contextlib import asynccontextmanager
@@ -10,6 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import knowledge, marketing, analytics, forecast
 from app.core.config import settings
+from app.core.auth import BasicAuthMiddleware
 from app.services.rag_service import rag_service
 from app.services.forecast_service import forecast_service
 
@@ -53,6 +55,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# CORS 必须在 BasicAuth 之前(否则 OPTIONS 预检不带 Authorization 会被挡)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_parse_cors(),
@@ -60,6 +63,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# BasicAuth 兜底所有路由(包括 /docs /openapi.json)
+app.add_middleware(BasicAuthMiddleware)
 
 app.include_router(knowledge.router, prefix="/api/knowledge", tags=["knowledge"])
 app.include_router(marketing.router, prefix="/api/marketing", tags=["marketing"])
@@ -82,7 +87,8 @@ async def root():
     }
 
 
-@app.get("/health")
+# /health 显式免鉴权(Render healthcheck 必需,否则假报服务挂)
+@app.get("/health", include_in_schema=False)
 async def health():
     return {
         "status": "ok",
