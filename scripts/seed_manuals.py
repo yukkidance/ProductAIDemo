@@ -3,6 +3,7 @@
 真实场景应替换为 PDF 解析后的结构化文本
 """
 import os
+from pathlib import Path
 
 MANUALS = {
     "A320_起落架维护手册.md": """# A320 起落架维护手册(节选)
@@ -136,8 +137,8 @@ CFM56-7B 发动机换发标准工时:
 
 
 def main():
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    target_dir = os.path.join(base_dir, "backend", "app", "data", "manuals")
+    base_dir = Path.cwd()
+    target_dir = base_dir / "backend" / "app" / "data" / "manuals"
     os.makedirs(target_dir, exist_ok=True)
     for filename, content in MANUALS.items():
         path = os.path.join(target_dir, filename)

@@ -15,15 +15,16 @@ services:
     runtime: python
     plan: free
     region: oregon
-    rootDir: backend
     buildCommand: |
       pip install --upgrade pip
-      pip install -r requirements.txt
+      pip install -r backend/requirements.txt
       python scripts/seed_manuals.py
       python scripts/seed_production_db.py
       python scripts/train_forecast_model.py
-      python scripts/build_vector_db.py
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+      # 注意:不跑 build_vector_db.py。语义向量已固化到 Git(vectors.npy + docs.json),
+      # 避免每次部署重复调智谱 embedding API(18 chunk × 1024 维 ≈ 几千 token/部署)
+      # 如需重建(手册内容更新后),本地跑一次并 commit vectors.npy
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.4"

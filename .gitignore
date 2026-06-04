@@ -9,7 +9,8 @@ env/
 *.pyc
 
 # 数据/模型(本地生成,不入 git)
-backend/app/data/chroma/
+backend/app/data/chroma/e9ddd665-2ddd-44de-b0b0-2d589d9cbe3d/
+backend/app/data/chroma/chroma.sqlite3
 backend/app/data/manuals/
 backend/app/data/production.db
 backend/app/data/forecast_model.json
@@ -43,5 +44,9 @@ tmp/
 temp/
 *.tmp
 
-# 根目录原始数据(data/ 不入 git)
-data/
+# 根目录原始数据(data/ 不入 git,只匹配项目根下的 data/,不影响 backend/app/data/...)
+/data/
+# 例外:RAG 智库的语义向量固化(commit 后 Render 部署直接用,不再调 embedding API)
+!backend/app/data/chroma/
+!backend/app/data/chroma/vectors.npy
+!backend/app/data/chroma/docs.json

@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from xgboost import XGBRegressor
 
-BACKEND_DIR = Path(__file__).resolve().parent.parent / "backend"
+BACKEND_DIR = Path.cwd() / "backend"
 os.chdir(BACKEND_DIR)
 
 CATEGORICAL_COLS = ["part_type", "aircraft_model"]

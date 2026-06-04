@@ -1,6 +1,12 @@
 """
 灌入 SQLite 演示数据库
 表: orders / production / oee / workhours
+
+注意:本脚本设计为「每次 Render 部署都重置数据库」(方案 1:演示用)。
+- Render 免费版文件系统每次重新部署会清空,空闲 ~15 分钟无流量也会回收
+- 因此选用「build 阶段每次重置演示数据」,保证演示数据始终存在
+- 用户运行时写入的数据(查询日志等)会在下次部署/空闲回收时丢失
+- 如需持久化用户数据,请用 Render Disk(付费)或外部 DB(Turso/Supabase 免费层)
 """
 import os
 import sys
@@ -10,7 +16,8 @@ from pathlib import Path
 
 import sqlite3
 
-BACKEND_DIR = Path(__file__).resolve().parent.parent / "backend"
+# 使用当前工作目录定位 backend（Render 构建时工作目录为项目根）
+BACKEND_DIR = Path.cwd() / "backend"
 os.chdir(BACKEND_DIR)
 
 DB_PATH = BACKEND_DIR / "app" / "data" / "production.db"

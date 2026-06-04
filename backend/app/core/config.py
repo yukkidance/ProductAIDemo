@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     # ⚠️ 默认密码是 32 位随机串,部署到 Render 后**必须**在 Dashboard 覆盖
     # ⚠️ 此默认值会进 git 公开仓库,生产**绝不能**用默认值
     DEMO_USERNAME: str = "demo"
-    DEMO_PASSWORD: str = "7aeae2CdqwnuMgh3MevbBmkZ8HN2zUeV"
+    DEMO_PASSWORD: str = "DEMO"
 
     CHROMA_PERSIST_DIR: str = "app/data/chroma"
     SQLITE_PATH: str = "app/data/production.db"
