@@ -50,7 +50,7 @@ export default function KnowledgeChat() {
     try {
       for await (const event of sseStream("/api/knowledge/chat", { query: text, history: [] })) {
         if (event.type === "meta") {
-          meta = { intent: event.intent, sources: event.sources, scores: event.scores };
+          meta = { intent: event.intent, sources: event.sources };
           setMessages((m) => {
             const newM = [...m];
             newM[newM.length - 1] = { ...newM[newM.length - 1], meta };
