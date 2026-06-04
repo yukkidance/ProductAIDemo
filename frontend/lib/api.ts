@@ -42,7 +42,9 @@ export async function* sseStream(
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const res = await fetch(`${API_BASE}${url}`, {
+    const base = API_BASE.replace(/\/+$/, "");  // 去掉结尾的 /
+    const path = url.startsWith("/") ? url : `/${url}`;
+    const res = await fetch(`${base}${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
