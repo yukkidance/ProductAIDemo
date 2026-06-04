@@ -24,7 +24,8 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     setStatus("verifying");
     try {
       const b64 = btoa(`${user.trim()}:${pass}`);
-      const res = await fetch(`${API_BASE}/`, {
+      const url = API_BASE.endsWith("/") ? API_BASE : `${API_BASE}/`;
+      const res = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Basic ${b64}` },
       });

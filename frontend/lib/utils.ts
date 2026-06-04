@@ -10,8 +10,8 @@ export const API_BASE = (() => {
   if (!raw) return "http://localhost:8000";
   // 本地开发环境:raw 为 "localhost:8000",补 http://
   if (raw.startsWith("localhost")) return `http://${raw}`;
-  // 已是完整 URL(含 http:// 或 https://),直接使用
-  if (raw.includes("://")) return raw;
-  // 其他情况(裸域名)补 https://
-  return `https://${raw.replace(/:\d+$/, "")}`;
+  // 已是完整 URL(含 http:// 或 https://),去掉末尾斜杠
+  if (raw.includes("://")) return raw.replace(/\/+$/, "");
+  // 其他情况(裸域名)补 https://,去掉末尾斜杠
+  return `https://${raw.replace(/:\d+$/, "").replace(/\/+$/, "")}`;
 })();
