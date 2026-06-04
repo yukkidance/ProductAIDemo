@@ -45,9 +45,15 @@ export default function ForecastDemo() {
         historical_avg: history,
         fleet_count: fleet,
       });
+      // 后端可能返回错误(模型未加载等)
+      if (!r.data || r.data.error) {
+        alert("预测服务未就绪: " + (r.data?.error || "未知错误"));
+        return;
+      }
       setResult(r.data);
     } catch (e: any) {
-      alert("预测失败: " + e.message);
+      const msg = e.response?.data?.error || e.message || "预测失败";
+      alert("预测失败: " + msg);
     } finally {
       setLoading(false);
     }
