@@ -53,12 +53,8 @@ services:
     region: oregon
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
-    envVars:
-      # 前端通过 Render 注入的后端 URL 直连
-      - key: NEXT_PUBLIC_API_BASE
-        fromService:
-          type: web
-          name: ai-portfolio-backend
-          property: hostport
+    # NEXT_PUBLIC_API_BASE 必须 build-time inline 到 bundle(Next.js 机制),
+    # 不能用 fromService(那是 runtime 注入,build 时拿不到)
+    # 后端域名硬编码到 frontend/next.config.js 的 env 字段
     healthCheckPath: /
     autoDeploy: true
