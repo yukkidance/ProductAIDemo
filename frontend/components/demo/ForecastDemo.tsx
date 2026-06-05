@@ -223,18 +223,24 @@ export default function ForecastDemo() {
             <div className="card">
               <div className="text-sm font-semibold mb-2">特征重要性(Top 5)</div>
               <div className="space-y-1.5">
-                {result.top_features.map((f) => (
-                  <div key={f.name} className="flex items-center gap-2 text-xs">
-                    <span className="w-32 truncate font-mono text-text-secondary">{f.name}</span>
-                    <div className="flex-1 h-5 bg-bg rounded overflow-hidden border border-border">
-                      <div
-                        className="h-full bg-gradient-to-r from-brand-500 to-accent-purple"
-                        style={{ width: `${f.importance * 100}%` }}
-                      />
-                    </div>
-                    <span className="w-12 text-right font-mono text-text-primary">{(f.importance * 100).toFixed(1)}%</span>
-                  </div>
-                ))}
+                {(() => {
+                  const total = result.top_features.reduce((sum, f) => sum + f.importance, 0);
+                  return result.top_features.map((f) => {
+                    const normalized = total > 0 ? (f.importance / total) * 100 : 0;
+                    return (
+                      <div key={f.name} className="flex items-center gap-2 text-xs">
+                        <span className="w-32 truncate font-mono text-text-secondary">{f.name}</span>
+                        <div className="flex-1 h-5 bg-bg rounded overflow-hidden border border-border">
+                          <div
+                            className="h-full bg-gradient-to-r from-brand-500 to-accent-purple"
+                            style={{ width: `${normalized}%` }}
+                          />
+                        </div>
+                        <span className="w-12 text-right font-mono text-text-primary">{normalized.toFixed(1)}%</span>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </div>
           </>
